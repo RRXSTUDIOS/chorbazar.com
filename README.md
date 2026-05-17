@@ -123,7 +123,7 @@
     <div class="category-card" onclick="openCategory('FreeFire UID TopUp')">
         🎮 Free Fire UID TopUp
     </div>
-    <div class="category-card" onclick="alert('Coming Soon!')">
+    <div class="category-card" onclick="openCategory('Free Fire Membership')">
         🛡 Free Fire Membership
     </div>
     <div class="category-card" onclick="alert('Coming Soon!')">
@@ -223,12 +223,12 @@
 <script>
     let selectedPrice = 0;
     let selectedPackName = "";
-    let activeCategory = ""; // লাইভ ক্যাটাগরি ট্র্যাকিং
+    let activeCategory = ""; 
     let lastLoadedTxID = ""; 
 
     const SHEETDB_API_URL = "https://sheetdb.io/api/v1/6oyklgob3u2fr"; 
 
-    // আপনার দেওয়া ফ্রি ফায়ার ইউআইডি টপ-আপ প্যাকের ডেটাবেজ
+    // ১. ফ্রি ফায়ার ইউআইডি টপ-আপ প্যাকের ডেটা
     const ffUidPacks = [
         { name: "25 Diamond", price: 23 },
         { name: "50 Diamond", price: 38 },
@@ -249,27 +249,48 @@
         { name: "2xMonthly", price: 1600 }
     ];
 
+    // ২. নতুন যুক্ত হওয়া ফ্রি ফায়ার মেম্বারশিপ প্যাকের ডেটা
+    const ffMembershipPacks = [
+        { name: "Weekly Lite", price: 50 },
+        { name: "Weekly", price: 160 },
+        { name: "Monthly", price: 800 },
+        { name: "2X Weekly", price: 320 },
+        { name: "3X Weekly", price: 480 },
+        { name: "2X Monthly", price: 1600 },
+        { name: "1Weekly + 1Monthly", price: 960 },
+        { name: "2X Weekly Lite", price: 100 },
+        { name: "5xWeekly", price: 800 }
+    ];
+
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
         if(pageId === 'home') {
-            // হোম পেজে ব্যাক করলে সিলেকশন রিসেট হবে
             selectedPrice = 0; selectedPackName = "";
             document.getElementById('sum-total').innerText = 0;
             document.getElementById('uid-input').value = "";
         }
     }
 
-    // নির্দিষ্ট ক্যাটাগরি পেজ ওপেন করার লজিক
     function openCategory(categoryName) {
         activeCategory = categoryName;
         document.getElementById('pack-title').innerText = "2. Select Recharge";
         
         const grid = document.getElementById('pack-grid');
-        grid.innerHTML = ""; // আগের প্যাক ক্লিয়ার করা
+        grid.innerHTML = ""; 
         
         if(categoryName === 'FreeFire UID TopUp') {
             ffUidPacks.forEach(pack => {
+                grid.innerHTML += `
+                    <div class="item" onclick="selectPack(this, '${pack.name}', ${pack.price})">
+                        <span style="font-weight: 700;">${pack.name}</span>
+                        <span class="price">৳ ${pack.price}</span>
+                    </div>
+                `;
+            });
+        } 
+        else if(categoryName === 'Free Fire Membership') {
+            ffMembershipPacks.forEach(pack => {
                 grid.innerHTML += `
                     <div class="item" onclick="selectPack(this, '${pack.name}', ${pack.price})">
                         <span style="font-weight: 700;">${pack.name}</span>
@@ -310,7 +331,7 @@
             "data": [
                 {
                     "Time": new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"}),
-                    "Category": activeCategory, // শিটে ক্যাটাগরি সাবমিট হবে
+                    "Category": activeCategory, 
                     "Player UID": uid,
                     "Selected Pack": selectedPackName,
                     "bKash Number": phone,
@@ -391,7 +412,13 @@
         setInterval(fetchLiveLastOrder, 10000); 
     }
 
+    // বিকাশ নম্বর বক্সে শুধু নম্বর টাইপ করার লজিক
     document.getElementById('customer-phone').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // নতুন ফিচার: প্লেয়ার ইউআইডি বক্সেও শুধু নম্বর টাইপ করার লজিক
+    document.getElementById('uid-input').addEventListener('input', function (e) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 </script>
