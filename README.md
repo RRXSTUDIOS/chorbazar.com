@@ -12,6 +12,8 @@
             --text-dark: #1f2937;
             --bkash-color: #d12053;
             --border: #e5e7eb;
+            --whatsapp-color: #25d366;
+            --telegram-color: #0088cc;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -53,6 +55,20 @@
 
         .btn-buy { width: 100%; padding: 16px; background: var(--purple-main); color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; font-size: 16px; transition: 0.3s; }
         .btn-buy:hover { background: #4c1d95; box-shadow: 0 6px 15px rgba(106, 13, 173, 0.3); }
+
+        /* Contact & About Styling */
+        .about-text { font-size: 15px; line-height: 1.6; color: #4b5563; text-align: justify; margin-bottom: 15px; font-family: 'Poppins', sans-serif; }
+        .support-badge { background: #10b981; color: white; display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; margin-top: 10px; }
+        
+        .contact-btn { 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 14px; margin-bottom: 12px; border: none; border-radius: 12px; 
+            color: white; font-weight: bold; font-size: 16px; cursor: pointer; text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s; font-family: 'Poppins', sans-serif;
+        }
+        .contact-btn:hover { transform: translateY(-2px); }
+        .whatsapp { background: var(--whatsapp-color); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
+        .telegram { background: var(--telegram-color); box-shadow: 0 4px 12px rgba(0, 136, 204, 0.2); }
 
         /* Payment Modal */
         #bkash-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -106,6 +122,38 @@
     </div>
 </div>
 
+<div id="about" class="page">
+    <div class="box">
+        <h2>About CHOR BAZAR</h2>
+        <p class="about-text">
+            Welcome to <b>CHOR BAZAR</b>, your premium destination for instant gaming top-ups. We provide the fastest, safest, and most reliable Weekly and Monthly memberships for your favorite games. 
+        </p>
+        <p class="about-text">
+            Our mission is to ensure a smooth and hassle-free transaction experience so you can focus on your gaming without any interruptions. With an automated system and trusted payment verification, your resources are delivered safely to your account in no time.
+        </p>
+        <div style="text-align: center;">
+            <span class="support-badge">⚡ 24/7 Support Available</span>
+        </div>
+    </div>
+</div>
+
+<div id="contact" class="page">
+    <div class="box">
+        <h2>Contact Us</h2>
+        <p class="about-text" style="text-align: center; margin-bottom: 20px;">
+            Need help with your order? Feel free to reach out to our dedicated support team anytime through the platforms below:
+        </p>
+        
+        <a href="https://wa.me/YOUR_NUMBER" target="_blank" class="contact-btn whatsapp">
+            💬 Connect via WhatsApp
+        </a>
+        
+        <a href="https://t.me/YOUR_USERNAME" target="_blank" class="contact-btn telegram">
+            ✈ Connect via Telegram
+        </a>
+    </div>
+</div>
+
 <div id="bkash-modal">
     <div class="bkash-content">
         <div class="bkash-header"><img src="https://www.logo.wine/a/logo/BKash/BKash-Logo.wine.svg" alt="bkash"></div>
@@ -143,7 +191,7 @@
 <script>
     let selectedPrice = 0;
     let selectedPackName = "";
-    let lastLoadedTxID = ""; // লাস্ট ট্র্যাকিং করা TxID সেভ রাখার জন্য
+    let lastLoadedTxID = ""; 
 
     const SHEETDB_API_URL = "https://sheetdb.io/api/v1/6oyklgob3u2fr"; 
 
@@ -206,7 +254,6 @@
                 document.getElementById('customer-phone').value = "";
                 document.getElementById('uid-input').value = "";
                 
-                // নিজের নতুন অর্ডারটি সাথে সাথে নোটিফিকেশনে আপডেট করে দেওয়া
                 updateNotifyBox(uid, selectedPackName);
                 lastLoadedTxID = trx.toUpperCase();
             }
@@ -220,13 +267,11 @@
     function closeSuccess() { document.getElementById('success-popup').style.display = 'none'; }
     function copyNum() { navigator.clipboard.writeText("01779772201"); alert("Number Copied!"); }
 
-    // নোটিফিকেশন বক্স সুন্দর এনিমেশন দিয়ে আপডেট করার ফাংশন
     function updateNotifyBox(uid, pack) {
         const notify = document.getElementById('notify-box');
         if (notify) {
             notify.style.opacity = '0';
             setTimeout(() => {
-                // কাস্টমারের ইউআইডির পেছনের ৪টি অক্ষর সিকিউরিটির জন্য হাইড (****) করে দেখাবে
                 let maskedUID = uid;
                 if(uid.length > 4) {
                     maskedUID = uid.substring(0, uid.length - 4) + "****";
@@ -237,38 +282,33 @@
         }
     }
 
-    // গুগল শিট থেকে লাইভ লাস্ট অর্ডার ডেটা নিয়ে আসার আসল লজিক
     function fetchLiveLastOrder() {
         fetch(SHEETDB_API_URL)
         .then(response => response.json())
         .then(data => {
             if (data && data.length > 0) {
-                // গুগল শিটের একদম শেষ লাইনের (লাস্ট ইনডেক্স) ডেটা রিড করা
                 const lastOrder = data[data.length - 1];
                 const currentTxID = lastOrder['TxID'];
                 
-                // যদি নতুন অর্ডার আসে (অর্থাৎ আগের সেভ করা TxID-এর সাথে না মিলে) তখনই শুধু নোটিফিকেশন চেঞ্জ হবে
                 if (currentTxID !== lastLoadedTxID) {
                     const uid = lastOrder['Player UID'] || "Unknown";
                     const pack = lastOrder['Selected Pack'] || "Pack";
                     
                     updateNotifyBox(uid, pack);
-                    lastLoadedTxID = currentTxID; // নতুন TxID লক করে রাখা হলো
+                    lastLoadedTxID = currentTxID; 
                 }
             } else {
                 document.getElementById('notify-box').innerText = "🚀 Waiting for the first order...";
             }
         })
-        .catch(error => console.log("Live tracking network error or empty sheet."));
+        .catch(error => console.log("Live tracking error."));
     }
 
-    // লাইভ ট্র্যাকিং স্টার্ট এবং প্রতি ১০ সেকেন্ড পর পর অটো চেক লুপ
     function startLiveOrderTracking() {
-        fetchLiveLastOrder(); // পেজ ওপেন হওয়ার সাথে সাথেই প্রথমবার চেক করবে
-        setInterval(fetchLiveLastOrder, 10000); // প্রতি ১০,০০০ মিলিসেকেন্ড (১০ সেকেন্ড) পর পর গুগল শিট ব্যাকগ্রাউন্ডে চেক করবে
+        fetchLiveLastOrder(); 
+        setInterval(fetchLiveLastOrder, 10000); 
     }
 
-    // ফোন নম্বর বক্সে শুধু নম্বর টাইপ করার লজিক
     document.getElementById('customer-phone').addEventListener('input', function (e) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
