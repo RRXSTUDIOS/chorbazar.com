@@ -118,7 +118,6 @@
         .btn-buy { width: 100%; padding: 16px; background: var(--purple-main); color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; font-size: 16px; transition: 0.3s; }
         .btn-buy:hover { background: #4c1d95; box-shadow: 0 6px 15px rgba(106, 13, 173, 0.3); }
 
-        /* পেমেন্ট গেটওয়ে সিলেকশন গ্রিড */
         .payment-method-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -477,7 +476,7 @@
         const uid = document.getElementById('uid-input').value.trim();
         const verifyBtn = document.getElementById('verify-btn');
         
-        if (trx.length < 10) return alert("সঠীক ১০ অক্ষরের TxID দিন!");
+        if (trx.length < 10) return alert("সঠিক ১০ অক্ষরের TxID দিন!");
         
         verifyBtn.innerText = "VERIFYING...";
         verifyBtn.disabled = true;
